@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/processing.js/1.4.8/processing.min.js"></script>
+<script type="application/processing" data-processing-target="pong"> 
+float balX = 400;
+float balY = 300;
+float richtingX = 1;
+float richtingY = 1;
+float voorwerpX = 0;
+float voorwerpY = 200;
+float rVoorwerpX = 1;
+float rVoorwerpY = 1;
+float droidX = 0;
+float droidY = 300;
+float rDroidX = 1;
+float rDroidY = 1;
+
+int grootte = 50;
+int hoogte = 50;
+int groot = 100;
+int hoog = 20;
+int score = 1;
+int begin = 0;
+
+void setup(){
+  size(800, 600);
+  noStroke();
+}
+
+void draw(){
+  if (begin == 0){//Title screen.
+  score = 1;
+  richtingY = 1;
+  richtingX = 1;
+  background(0);
+  textSize(50);
+  fill(245, 17, 17);
+  text("Power-Pong!", 240, 200);
+  text("Press the mouse to start", 100, 400);
+  }
+  
+  if (begin == 1){//Start game
+  background(106+(mouseX*106/255), 214, 13);
+  fill(41, 125, 255);
+  ellipse(balX, balY, 30, 30);//Balletje
+  fill(234-(mouseX* 134/234), 9+(mouseX*9/150), 115);
+  rect(mouseX, 580, 80, 20);//Pad 1
+  rect(mouseX, 0, 80, 20);//Pad 2
+  maakSpel();
+  maakPad();
+  maakScore();
+  maakVoorwerp1();
+  maakVoorwerp2();
+  maakFinale();
+  maakGameOver();
+  maakEinde();
+  }
+  
+  if (begin == 2){//Pauzemenu.
+    maakPauze();
+  }
+  
+  if (begin == 3){//Terug naar titelscherm.
+    begin = 1;
+  }
+}  
+  
+void maakSpel(){//Je kunt cheaten met dit spel. Met deze cheat kun je het hele spel manipuleren, zodat je een hogere score krijgt! Kunt u de cheat vinden???
+  //balY
+  if (balY >= 600){
+    richtingY = -1;
+    balY += richtingY;
+  }
+  else{
+  balY += richtingY;
+}
+  //Raakt pad 1 
+  if (balY <= 0){
+    richtingY = 1;
+    balY += richtingY;
+    score = 0;
+  }
+  else if (balY >= 570 && balX >= mouseX && balX <= mouseX+80){
+    richtingY = -1;
+    balY += richtingY;
+    score = score +1;
+  }
+  else{
+    balY += richtingY;
+  }
+  
+  //Raakt pad 2
+  if (balY >= 600){
+    richtingY = -1;
+    balY += richtingY;
+    score = 0;
+  }
+  else if (balY <= 30 && balX >= mouseX && balX <= mouseX+80){
+    richtingY = 1;
+    balY += richtingY;
+    score = score +1;
+  }
+  else{
+    balY += richtingY;
+  }
+    
+  //BalX
+  if (balX >= 800){
+    richtingX = -1;
+    balX += richtingX;
+  }
+  else{
+    balX += richtingX;
+  }
+  if (balX <= 0){
+    richtingX = 1;
+    balX += richtingX;
+  }
+  else{
+    balX += richtingX;
+  }
+}
+
+void maakPad(){
+  if (mouseX >= 720){
+    mouseX = 720;
+  }
+  else{
+  fill(234-(mouseX* 134/234), 9+(mouseX*9/150), 115);
+  rect(mouseX, 580, 80, 20);//Pad 1
+  rect(mouseX, 0, 80, 20);//Pad 2
+  }    
+}
+
+void maakScore(){
+  fill(188, 2, 2);
+  textSize(50);
+  text(score, 50, 300);
+}
+
+void maakVoorwerp1(){//Zorgt ervoor dat je de bal en pad niet goed meer kan zien!!!
+   if(score >= 5){
+    fill(242, 0, 250);
+    rect(voorwerpX, voorwerpY, grootte, hoogte);
+  }
+
+  if (voorwerpY >= 600){//Voorwerp beweegt.
+    rVoorwerpY = -1;
+    voorwerpY += rVoorwerpY;
+  }
+  else{
+    voorwerpY += rVoorwerpY;
+  }
+  if (voorwerpY <= 0){
+    rVoorwerpY = 1;
+    voorwerpY += rVoorwerpY;
+  }
+  else{
+    voorwerpY += rVoorwerpY;
+  }
+  if (voorwerpX >= 800){
+    rVoorwerpX = -1;
+    voorwerpX += rVoorwerpX;
+  }
+  else{
+    voorwerpX += rVoorwerpX;
+  }
+  if (voorwerpX <= 0){
+    rVoorwerpX = 1;
+    voorwerpX += rVoorwerpX;
+  }
+  else{
+    voorwerpX += rVoorwerpX;
+  }
+   if (score == 15){//Voorwerp wordt groter.
+    grootte = grootte +1;
+    hoogte = hoogte +1;
+   }
+   if (score == 25){//Voorwerp wordt nog groter.
+    hoogte = hoogte +1;
+    grootte = grootte +1;
+   }
+   if (score == 35){//Voorwerp op z'n grootst!
+     hoogte = hoogte + 1;
+     grootte = grootte +1;
+  }
+   if (score == 0){//Voorwerp wordt normaal.
+    grootte = 50;
+    hoogte = 50;
+   }
+   if (score == 40){//Het voorwerp verdwijnt en je hebt even rust.
+     grootte = 0;
+     hoogte = 0;
+   }
+}
+
+void maakVoorwerp2(){
+  if (score >= 50){
+   groot = 100;
+   hoog = 20;
+   fill(129, 0, 121);
+   rect(droidX, droidY, groot, hoog);
+  }  
+  if (droidX >= 700){//Droid beweegt heen en weer.
+    rDroidX = -0.5;
+    droidX += rDroidX;
+  }
+  else{
+    droidX += rDroidX;
+  }
+  if (droidX <= 0){//Droid beweegt heen en weer.
+    rDroidX = 0.5;
+    droidX += rDroidX;
+  }
+   else if (score >= 50 && balY <= 310 && balX >= droidX && balX <= droidX+100){//Bal raakt droid.
+    richtingY = 2;
+    balY += richtingY;
+    droidX += rDroidX;
+  }
+  else if (score >= 50 && balY >= 290 && balX >= droidX && balX <= droidX+100){//Bal raakt droid.
+    richtingY = -2;
+    balY += richtingY;
+    droidX += rDroidX;
+  }
+  else{    
+    droidX += rDroidX;
+    balY += richtingY;    
+  }
+  if (score == 0){
+    groot = 0;
+    hoog = 0;
+   }
+}
+
+void maakEinde(){
+  if (score >= 100){
+    richtingY = 0;
+    richtingX = 0;
+    background(0);
+    textSize(30);
+    fill(245, 17, 17);
+    text("Congratulations!", 275, 150);
+    text("You finished the game", 235, 250);
+    text("Made by ©Unknownymous", 205, 350);
+  }
+}
+
+void maakGameOver(){
+  if (score <= 0){
+  richtingY = 0;
+  richtingX = 0;
+  balY = 400;
+  balX = 300;
+  background(0);
+  textSize(50);
+  fill(245, 17, 17);
+  text("Game Over!!!", 250, 300);
+  }
+}
+
+void maakPauze(){
+  background(0);
+  textSize(50);
+  fill(245, 17, 17);
+  text("Paused", 310, 200);
+  text("Press the mouse to continue", 60, 400);
+}
+
+void maakFinale(){
+  if (score == 80){
+    grootte = 50;
+    hoogte = 50;
+  }
+  if (score == 86){
+    grootte = grootte + 1;
+    hoogte = hoogte + 1;
+  }
+  if (score == 96){
+    grootte = grootte + 1;
+    hoogte = hoogte + 1;
+  }
+  if (score == 100){
+    grootte = 0;
+    hoogte = 0;
+  }
+}
+
+void mouseClicked(){
+  begin = min(begin + 1,3);
+  if (score >= 100){
+    begin = 0;
+  }
+  if (score <= 0){
+    begin = 0;
+  }
+}
+
+</script>
+<link href = "©Unknownymous games.css" rel = "stylesheet">
+<title> Unknownymous Games!</title>
+<style>
+.Games{
+		background-color: black;
+		color: red;
+		margin: -10px;
+        padding: 20px;
+	}
+	body{
+	color: red;
+	}
+</style>
+</head>
+
+<body>
+<div class = "Games">
+<H2> Unknownymous Games! </H2>
+</div>
+<br>
+<center>
+<H2>
+<p> This is 'Power-Pong!' An alternative version of the game 'Pong'.</p>
+</p>
+<br>
+<p> Explanation:</H2></p>
+<br>
+<p> You have two pads, one above the screen and the other below.</p>
+<p> You must get a score of a hunderd and you have won!</p>
+<p> But, there're some objects which will interrupt you:</p>
+<p> The Object and The Droid! </p>
+<p> You'll find out how these objects work. </p>
+<p> Sometimes if you hit the Droid, you get 2 points.</p>
+<p> You can also pause this game. If you're in game, click the mouse and the game will pause.</p>
+<p> If you're game-over, press the mouse to go to the title screen and you can start again.</p>
+<p> You can cheat this game also, so I hope that you can find the cheat!</p>
+<p> If you start the game, you have a score of one and you can't be game-over. You have one lucky point.</p>
+<p> Good luck and let's play 'Power-Pong!'.</p>
+<br>
+<br>
+<br>
+<br>
+<canvas id = "pong"></canvas>
+</center>
+</body>
+
+</html>
